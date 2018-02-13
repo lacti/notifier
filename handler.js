@@ -55,9 +55,9 @@ app.post('/noti/:key', (req, res) => {
   const key = req.params.key;
   const message = {
     type: 'text',
-    text: `(${req.body.host}) ${key} ${req.body.text}`
+    text: `(${key}) ${req.body.text}`
   };
-  query(`SELECT id FROM subs WHERE key="${key}"`).then(result => {
+  query(`SELECT id FROM subs WHERE \`key\`="${key}"`).then(result => {
     let userIds = result.filter(e => e.id.startsWith('U')).map(e => e.id);
     let groupIds = result.filter(e => e.id.startsWith('C')).map(e => e.id);
     Promise.all(
@@ -72,7 +72,7 @@ app.post('/noti/:key', (req, res) => {
 const help = `안녕하세요!
 @[on/off] [key]로 알람을 조정하고 @status로 상태를 확인할 수 있습니다.
 예) @on ktx`;
-const onoff = /@(on|off) ([a-z\-.0-9]+)/;
+const onoff = /@(on|off)\s+(.+)$/;
 
 function handleEvent(event) {
   console.log(event);
@@ -105,13 +105,13 @@ function handleEvent(event) {
     let op = cmd[1];
     let selectedKey = cmd[2];
     if (op === 'on') {
-      return query(`REPLACE INTO subs (id, key) VALUES ("${id}", "${selectedKey}")`);
+      return query(`REPLACE INTO subs (id, \`key\`) VALUES ("${id}", "${selectedKey}")`);
     } else /* off */ {
-      return query(`DELETE FROM subs WHERE id="${id}" AND key="${selectedKey}"`);
+      return query(`DELETE FROM subs WHERE id="${id}" AND \`key\`="${selectedKey}"`);
     }
   }
   else if ('@status' === text) {
-    return query(`SELECT GROUP_CONCAT(key SEPARATOR '\n') AS status FROM subs WHERE id='${id}' GROUP BY id`)
+    return query(`SELECT GROUP_CONCAT(\`key\` SEPARATOR '\n') AS status FROM subs WHERE id='${id}' GROUP BY id`)
       .then(res => {
         const subs = res[0];
         const status = subs && subs.status ? subs.status : 'empty';
