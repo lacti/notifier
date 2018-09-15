@@ -1,5 +1,5 @@
 {
-  "name": "limervot",
+  "name": "notifier",
   "version": "1.0.0",
   "description": "",
   "main": "handler.js",
@@ -8,11 +8,11 @@
     "aws-serverless-express": "^3.0.1",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
-    "mysql": "github:mysqljs/mysql"
+    "mysql": "^2.16.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy": "SLS_DEBUG=* sls deploy"
   },
-  "author": "",
+  "author": "lacti",
   "license": "ISC"
 }
