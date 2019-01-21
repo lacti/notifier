@@ -1,4 +1,6 @@
 .serverless/
+.webpack/
 node_modules/
 
-.envrc
+.env
+
