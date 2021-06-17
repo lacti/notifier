@@ -1,60 +1,76 @@
-import * as mysql from 'mysql';
+import * as mysql from "mysql";
 
 const dbConfig = {
   host: process.env.DB_HOST,
-  user: 'notifier',
+  user: "notifier",
   password: process.env.DB_PASSWORD,
-  database: 'notifier',
+  database: "notifier",
 };
 
-const query = <T>(sql: string, params?: any[]) =>
-  new Promise<T | undefined>(async (resolve, reject) => {
+function query<T>(sql: string, params?: any[]): Promise<T> {
+  return new Promise<T>(async (resolve, reject) => {
     const connection = mysql.createConnection(dbConfig);
     connection.connect();
 
-    if (process.env.NODE_ENV !== 'test') {
-      console.log(`Execute query:`, sql, params);
+    if (process.env.NODE_ENV !== "test") {
+      console.debug({ sql, params }, "Execute query");
     }
     connection.query(sql, params, (error: mysql.MysqlError, result?: T) => {
       connection.end();
       if (error) {
-        console.error(`Query error:`, sql, error);
+        console.error({ sql, error }, "Query error");
         reject(error);
       } else {
-        resolve(result);
-        if (process.env.NODE_ENV !== 'test') {
-          console.log(`DB result:`, result);
+        resolve(result!);
+        if (process.env.NODE_ENV !== "test") {
+          console.debug({ result }, "DB result");
         }
       }
     });
   });
+}
 
-const fetch = <T>(sql: string, params?: any[]) =>
-  query<T[]>(sql, params).then(res => res || []);
+async function fetch<T>(sql: string, params?: any[]): Promise<T[]> {
+  const result = await query<T[]>(sql, params);
+  return result ?? [];
+}
 
-const fetchOne = <T>(sql: string, params?: any[], defaultValue?: T) =>
-  fetch<T>(sql, params).then(res => {
-    if (res === undefined || res[0] === undefined) {
-      // Makes it as non-null result.
-      return defaultValue || (({} as any) as T);
-    }
-    return res[0];
-  });
+async function fetchOne<T>(
+  sql: string,
+  params?: any[],
+  defaultValue?: T
+): Promise<T> {
+  const result = await fetch<T>(sql, params);
+  if (result === undefined || result[0] === undefined) {
+    // Makes it as non-null result.
+    return defaultValue ?? ({} as any as T);
+  }
+  return result[0];
+}
 
-export const fetchSubscribedChannels = (token: string) =>
-  fetch<{ id: string }>(`SELECT id FROM subs WHERE token=?`, [token]);
+export function fetchSubscribedChannels(token: string) {
+  return fetch<{ id: string }>(`SELECT id FROM subs WHERE token=?`, [token]);
+}
 
-export const leaveSubscription = (id: string) =>
-  query<number>(`DELETE FROM subs WHERE id=?`, [id]);
+export function leaveSubscription(id: string) {
+  return query<number>(`DELETE FROM subs WHERE id=?`, [id]);
+}
 
-export const subscribe = (id: string, token: string) =>
-  query<number>(`REPLACE INTO subs (id, token) VALUES (?, ?)`, [id, token]);
+export function subscribe(id: string, token: string) {
+  return query<number>(`REPLACE INTO subs (id, token) VALUES (?, ?)`, [
+    id,
+    token,
+  ]);
+}
 
-export const unsubscribe = (id: string, token: string) =>
-  query<number>(`DELETE FROM subs WHERE id=? AND token=?`, [id, token]);
+export function unsubscribe(id: string, token: string) {
+  return query<number>(`DELETE FROM subs WHERE id=? AND token=?`, [id, token]);
+}
 
-export const fetchSubscriptionStatus = (id: string) =>
-  fetchOne<{ status: string }>(
+export function fetchSubscriptionStatus(id: string) {
+  return fetchOne<{ status: string }>(
     `SELECT GROUP_CONCAT(token SEPARATOR '\n') AS status FROM subs WHERE id=? GROUP BY id`,
     [id],
+    { status: "" }
   );
+}

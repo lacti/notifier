@@ -1,39 +1,26 @@
 {
   "name": "notifier",
   "version": "1.0.0",
-  "main": "src/index.ts",
+  "main": "src/handler.ts",
   "author": "lacti",
   "license": "MIT",
   "scripts": {
-    "info": "sls info",
-    "deploy": "SLS_DEBUG=* sls deploy",
-    "update": "yarn update:webhook && yarn update:noti",
-    "update:webhook": "SLS_DEBUG=* sls deploy function --function webhook",
-    "update:noti": "SLS_DEBUG=* sls deploy function --function noti",
-    "log:webhook": "sls logs -f webhook",
-    "log:noti": "sls logs -f noti"
+    "build": "sls package",
+    "deploy": "sls deploy"
   },
   "dependencies": {
-    "@line/bot-sdk": "^6.3.0",
-    "api-gateway-rest-handler": "^0.1.2",
-    "mysql": "^2.16.0"
+    "@line/bot-sdk": "^7.3.0",
+    "mysql": "^2.18.1"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.13",
-    "@types/mysql": "^2.15.5",
-    "prettier": "^1.14.3",
-    "serverless": "^1.36.1",
-    "serverless-dotenv-plugin": "^2.0.1",
-    "serverless-webpack": "^5.2.0",
-    "ts-loader": "^5.2.1",
-    "tslint": "^5.11.0",
-    "tslint-config-prettier": "^1.15.0",
-    "typescript": "^3.1.1",
-    "webpack": "^4.20.2"
-  },
-  "prettier": {
-    "printWidth": 80,
-    "singleQuote": true,
-    "trailingComma": "all"
+    "@types/aws-lambda": "^8.10.77",
+    "@types/mysql": "^2.15.18",
+    "prettier": "^2.3.1",
+    "serverless": "^2.46.0",
+    "serverless-webpack": "^5.5.1",
+    "source-map-support": "^0.5.19",
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.3.3",
+    "webpack": "^5.39.0"
   }
 }

@@ -1,40 +1,27 @@
 service: notifier
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs14.x
   stage: production
   region: ap-northeast-2
+  lambdaHashingVersion: 20201221
+  memorySize: 128
+  timeout: 5
+  environment:
+    CHANNEL_SECRET: ${env:CHANNEL_SECRET}
+    CHANNEL_ACCESS_TOKEN: ${env:CHANNEL_ACCESS_TOKEN}
+    DB_HOST: ${env:DB_HOST}
+    DB_PASSWORD: ${env:DB_PASSWORD}
 
 plugins:
   - serverless-webpack
-  - serverless-dotenv-plugin
 
 functions:
   webhook:
     handler: src/handler.webhook
-    memorySize: 128
-    timeout: 5
-    environment:
-      CHANNEL_SECRET: ${env:CHANNEL_SECRET}
-      CHANNEL_ACCESS_TOKEN: ${env:CHANNEL_ACCESS_TOKEN}
-      DB_HOST: ${env:DB_HOST}
-      DB_PASSWORD: ${env:DB_PASSWORD}
     events:
-      - http:
-          path: webhook
-          method: post
+      - httpApi: POST /webhook
   noti:
     handler: src/handler.noti
-    memorySize: 128
-    timeout: 5
-    environment:
-      DB_HOST: ${env:DB_HOST}
-      DB_PASSWORD: ${env:DB_PASSWORD}
     events:
-      - http:
-          path: noti/{token}
-          method: post
-          request:
-            parameters:
-              paths:
-                token: true
+      - httpApi: POST /noti/{token}

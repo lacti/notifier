@@ -2,5 +2,5 @@
 .webpack/
 node_modules/
 
-.env
+.envrc
 
