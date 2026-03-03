@@ -8,14 +8,14 @@ const dbConfig = {
 };
 
 function query<T>(sql: string, params?: any[]): Promise<T> {
-  return new Promise<T>(async (resolve, reject) => {
+  return new Promise<T>((resolve, reject) => {
     const connection = mysql.createConnection(dbConfig);
     connection.connect();
 
     if (process.env.NODE_ENV !== "test") {
       console.debug({ sql, params }, "Execute query");
     }
-    connection.query(sql, params, (error: mysql.MysqlError, result?: T) => {
+    connection.query(sql, params, (error: mysql.MysqlError | null, result?: T) => {
       connection.end();
       if (error) {
         console.error({ sql, error }, "Query error");

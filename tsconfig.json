@@ -1,13 +1,21 @@
 {
   "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "sourceMap": true,
-    "lib": ["es5", "es6", "dom", "es2015", "esnext.asynciterable"],
+    "lib": ["ES2022"],
+    "types": ["node", "aws-lambda"],
+    "strict": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "useUnknownInCatchVariables": false,
     "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": true
-  }
+    "noUnusedLocals": true,
+    "outDir": "dist"
+  },
+  "include": ["src/**/*.ts", "serverless.ts"],
+  "exclude": ["node_modules", ".serverless", ".webpack", "dist"]
 }

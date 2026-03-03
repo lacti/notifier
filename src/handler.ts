@@ -99,7 +99,7 @@ function getTextFromBody(event: APIGatewayProxyEventV2): string {
     const maybe = JSON.parse(body);
     return maybe?.text ?? "";
   } catch (error) {
-    console.error({ body }, "Invalid JSON");
+    console.error({ body, error }, "Invalid JSON");
     return "";
   }
 }

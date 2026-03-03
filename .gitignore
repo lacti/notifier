@@ -1,6 +1,6 @@
 .serverless/
 .webpack/
+dist/
 node_modules/
 
 .envrc
-
